@@ -8,7 +8,7 @@ var autoprefixer = require('gulp-autoprefixer');
 var concat = require('gulp-concat');
 var port = process.env.port || 3000;
 var autoPrefixerOptions = {
-    broswers: ['last 2 version', '> %5']
+    browsers: ['last 2 version', '> %5']
 }
 gulp.task('sass', function () {
     gulp.src('./app/src/scss/**/*.scss')
@@ -16,13 +16,6 @@ gulp.task('sass', function () {
         .pipe(autoprefixer(autoPrefixerOptions))
         .pipe(concat('custom.css'))
         .pipe(gulp.dest('./app/dist'));
-});
-
-gulp.task('css-thirdparty', function () {
-    gulp.src('.app/src/css-thirdparty/**/*.css')
-        .pipe(autoprefixer(autoPrefixerOptions))
-        .pipe(concat('css-thirdparty.css'))
-        .pipe(gulp.dest('./app/dist'))
 });
 
 gulp.task('browserify', function () {
@@ -66,10 +59,9 @@ gulp.task('watch', function () {
     gulp.watch('./app/index.html', ['html']);
     gulp.watch('./app/dist/**/*.js', ['js']);
     gulp.watch('./app/dist/**/*.css', ['css']);
-    gulp.watch('./app/src/**/*.css', ['css-thirdparty'])
     gulp.watch('./app/src/**/*.scss', ['sass']);
     gulp.watch('./app/src/**/*.js', ['browserify']);
 });
 
-gulp.task('default', ['browserify', 'sass', 'css-thirdparty']);
-gulp.task('serve', ['browserify', 'sass', 'css-thirdparty', 'connect', 'open', 'watch']);
+gulp.task('default', ['browserify', 'sass']);
+gulp.task('serve', ['browserify', 'sass', 'connect', 'open', 'watch']);
