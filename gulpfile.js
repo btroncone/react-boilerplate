@@ -7,13 +7,11 @@ var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
 var concat = require('gulp-concat');
 var port = process.env.port || 3000;
-var autoPrefixerOptions = {
-    browsers: ['last 2 version', '> %5']
-}
+
 gulp.task('sass', function () {
     gulp.src('./app/src/scss/**/*.scss')
         .pipe(sass())
-        .pipe(autoprefixer(autoPrefixerOptions))
+        .pipe(autoprefixer())
         .pipe(concat('custom.css'))
         .pipe(gulp.dest('./app/dist'));
 });
@@ -21,10 +19,16 @@ gulp.task('sass', function () {
 gulp.task('browserify', function () {
     browserify('./app/src/js/app.js')
         .transform('reactify', {
-            'es6': true
+            'es6': true,
+            'debug': true
         })
         .bundle()
         .pipe(source('app.js'))
+        .pipe(gulp.dest('./app/dist'));
+});
+
+gulp.task('copy', function () {
+    gulp.src('./app/index.html')
         .pipe(gulp.dest('./app/dist'));
 });
 
@@ -40,7 +44,7 @@ gulp.task('open', function () {
     var options = {
         url: 'http://localhost:' + port,
     };
-    gulp.src('./app/index.html').pipe(open('', options));
+    gulp.src('./dist/index.html').pipe(open('', options));
 });
 
 gulp.task('html', function () {
@@ -63,5 +67,5 @@ gulp.task('watch', function () {
     gulp.watch('./app/src/**/*.js', ['browserify']);
 });
 
-gulp.task('default', ['browserify', 'sass']);
-gulp.task('serve', ['browserify', 'sass', 'connect', 'open', 'watch']);
+gulp.task('default', ['browserify', 'copy', 'sass']);
+gulp.task('serve', ['browserify', 'sass', 'copy', 'connect', 'open', 'watch']);
